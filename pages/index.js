@@ -1,65 +1,119 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Link from "next/link";
+import fetch from "isomorphic-unfetch";
+import { motion } from "framer-motion";
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+// Our custom easing
+let easing = [0.6, -0.05, 0.01, 0.99];
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+// animate: defines animation
+// initial: defines initial state of animation or stating point.
+// exit: defines animation when component exits
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+// Custom variant
+const fadeInUp = {
+  initial: {
+    y: 60,
+    opacity: 0,
+    transition: { duration: 0.6, ease: easing }
+  },
+  animate: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: easing
+    }
+  }
+};
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+const data =[
+  {
+    "id": "ghost-whey-x-chips-ahoy",
+    "name": "Ghost Whey X Chips Ahoy",
+    "details": "We've said it before and we will say it again, nothing beats the real thing. With years of R&D and REAL CHIPS AHOY!® cookie pieces in every scoop, this flavor is second to none.",
+    "price": "$39.99",
+    "image": "http://lazuvietnam.com/wp-content/uploads/2020/06/222-510x588.png"
+  },
+  {
+    "id": "ghost-whey-vegan",
+    "name": "GHOST® Vegan Protein",
+    "details": "GHOST Vegan Protein combines a premium, fully disclosed vegan protein blend with industry-leading flavors...what more could you ask for?",
+    "price": "$49.99",
+    "image": "https://cdn.shopify.com/s/files/1/2060/6331/products/Vegan.png?v=1574882358"
+  }
+]
+const Index = props => (
+  <motion.div initial='initial' animate='animate' exit={{ opacity: 0 }}>
+    <div className='container center'>
+      <motion.div
+        animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        className='title'>
+        <h1>SẢN PHẨM LAOBACH.COM</h1>
+      </motion.div>
+      <motion.div variants={stagger} className='product-row'>
+        {props.products.map(product => (
+          <Link
+            key={product.id}
+            href='/products/[id]'
+            as={`/products/${product.id}`}>
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className='card'>
+              <span className='category'>Protein</span>
+              <motion.img
+                initial={{ x: 60, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                key={product.image}
+                src={product.image}
+                width={250}
+              />
+              <div className='product-info'>
+                <h4>{product.name}</h4>
+                <span>{product.price}</span>
+              </div>
+            </motion.div>
+          </Link>
+        ))}
+      </motion.div>
     </div>
-  )
-}
+  </motion.div>
+);
+
+Index.getInitialProps = async function() {
+  const res = await fetch(
+    "https://my-json-server.typicode.com/wrongakram/demo/products"
+  );
+  // const data = await res.json();
+  const data =[
+    {
+      "id": "ghost-whey-x-chips-ahoy",
+      "name": "Ghost Whey X Chips Ahoy",
+      "details": "We've said it before and we will say it again, nothing beats the real thing. With years of R&D and REAL CHIPS AHOY!® cookie pieces in every scoop, this flavor is second to none.",
+      "price": "$39.99",
+      "image": "http://lazuvietnam.com/wp-content/uploads/2020/06/222-510x588.png"
+    },
+    {
+      "id": "ghost-whey-vegan",
+      "name": "GHOST® Vegan Protein",
+      "details": "GHOST Vegan Protein combines a premium, fully disclosed vegan protein blend with industry-leading flavors...what more could you ask for?",
+      "price": "$49.99",
+      "image": "https://cdn.shopify.com/s/files/1/2060/6331/products/Vegan.png?v=1574882358"
+    }
+  ]
+  return {
+    products: data
+  };
+};
+
+export default Index;
