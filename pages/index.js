@@ -1,119 +1,43 @@
-import Link from "next/link";
-import fetch from "isomorphic-unfetch";
-import { motion } from "framer-motion";
+import Navbar from "./layout/Navbar";
 
-// Our custom easing
-let easing = [0.6, -0.05, 0.01, 0.99];
+import Head from "next/head";
+import Main from "./layout/main";
 
-// animate: defines animation
-// initial: defines initial state of animation or stating point.
-// exit: defines animation when component exits
-
-// Custom variant
-const fadeInUp = {
-  initial: {
-    y: 60,
-    opacity: 0,
-    transition: { duration: 0.6, ease: easing }
-  },
-  animate: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: easing
-    }
-  }
-};
-
-const stagger = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-const data =[
-  {
-    "id": "ghost-whey-x-chips-ahoy",
-    "name": "Ghost Whey X Chips Ahoy",
-    "details": "We've said it before and we will say it again, nothing beats the real thing. With years of R&D and REAL CHIPS AHOY!® cookie pieces in every scoop, this flavor is second to none.",
-    "price": "$39.99",
-    "image": "http://lazuvietnam.com/wp-content/uploads/2020/06/222-510x588.png"
-  },
-  {
-    "id": "ghost-whey-vegan",
-    "name": "GHOST® Vegan Protein",
-    "details": "GHOST Vegan Protein combines a premium, fully disclosed vegan protein blend with industry-leading flavors...what more could you ask for?",
-    "price": "$49.99",
-    "image": "https://cdn.shopify.com/s/files/1/2060/6331/products/Vegan.png?v=1574882358"
-  }
-]
-const Index = props => (
-  <motion.div initial='initial' animate='animate' exit={{ opacity: 0 }}>
-    <div className='container center'>
-      <motion.div
-        animate={{ opacity: 1 }}
-        initial={{ opacity: 0 }}
-        className='title'>
-        <h1>SẢN PHẨM LAOBACH.COM</h1>
-      </motion.div>
-      <motion.div variants={stagger} className='product-row'>
-        {props.products.map(product => (
-          <Link
-            key={product.id}
-            href='/products/[id]'
-            as={`/products/${product.id}`}>
-            <motion.div
-              variants={fadeInUp}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className='card'>
-              <span className='category'>Protein</span>
-              <motion.img
-                initial={{ x: 60, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                key={product.image}
-                src={product.image}
-                width={250}
-              />
-              <div className='product-info'>
-                <h4>{product.name}</h4>
-                <span>{product.price}</span>
-              </div>
-            </motion.div>
-          </Link>
-        ))}
-      </motion.div>
+export default function Home() {
+  return (
+    <div>
+      <Head>
+        <title>My page title</title>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+          crossorigin="anonymous"
+        ></link>
+        <script
+          src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+          crossorigin="anonymous"
+        ></script>
+        <script
+          src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+          integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+          crossorigin="anonymous"
+        ></script>
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+          integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+          crossorigin="anonymous"
+        ></script>{" "}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+          crossorigin="anonymous"
+        ></link>
+      </Head>
+      <Navbar />
+      <Main/>
     </div>
-  </motion.div>
-);
-
-Index.getInitialProps = async function() {
-  const res = await fetch(
-    "https://my-json-server.typicode.com/wrongakram/demo/products"
   );
-  // const data = await res.json();
-  const data =[
-    {
-      "id": "ghost-whey-x-chips-ahoy",
-      "name": "Ghost Whey X Chips Ahoy",
-      "details": "We've said it before and we will say it again, nothing beats the real thing. With years of R&D and REAL CHIPS AHOY!® cookie pieces in every scoop, this flavor is second to none.",
-      "price": "$39.99",
-      "image": "http://lazuvietnam.com/wp-content/uploads/2020/06/222-510x588.png"
-    },
-    {
-      "id": "ghost-whey-vegan",
-      "name": "GHOST® Vegan Protein",
-      "details": "GHOST Vegan Protein combines a premium, fully disclosed vegan protein blend with industry-leading flavors...what more could you ask for?",
-      "price": "$49.99",
-      "image": "https://cdn.shopify.com/s/files/1/2060/6331/products/Vegan.png?v=1574882358"
-    }
-  ]
-  return {
-    products: data
-  };
-};
-
-export default Index;
+}
